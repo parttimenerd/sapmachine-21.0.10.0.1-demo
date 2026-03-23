@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: sapmachine
-          java-version: '21.0.10+0.1'
+          java-version: '21.0.10'
 
       - name: Show Java version
         run: |
