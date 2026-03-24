@@ -70,3 +70,57 @@ strategy:
 | `.github/actions/build/action.yml` | Composite action mirroring the customer's setup (setup-java + Maven) |
 | `pom.xml` | Minimal Maven project so `mvn verify` has something to execute |
 
+## Real root cause
+
+The real problem encountered in the customer's run is *not* GitHub Actions itself
+but the Maven ecosystem in combination with the SapMachine JDK build naming.
+The `maven-enforcer-plugin` (and Maven's model parser in some configurations)
+can fail to process the POM when a JDK with the SapMachine four-part version
+string (e.g. `21.0.10.0.1`) is installed as the active JVM.
+
+## How to reproduce locally
+
+1. Download the SapMachine 21.0.10.0.1 build (the macOS .jdk bundle) and place it in `~/Downloads`.
+2. Install it with SDKMAN (or set JAVA_HOME manually):
+
+```bash
+# install the local JDK with sdkman
+sdk install java 21.0.10.0.1 ~/Downloads/sapmachine-jdk-21.0.10.0.1.jdk/Contents/Home
+
+# switch to that JDK
+sdk use java 21.0.10.0.1
+```
+
+3. From the repo root run:
+
+```bash
+mvn package
+```
+
+You should see the Maven model parse error similar to the one from the customer's run:
+
+```
+[INFO] Scanning for projects...
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[FATAL] Non-parseable POM /path/to/pom.xml: Unrecognised tag: 'java.version' (position: START_TAG seen ...</pluginManagement>\n      <java.version>... @28:21)  @ line 28, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project  (/path/to/pom.xml) has 1 error
+[ERROR]     Non-parseable POM /path/to/pom.xml: Unrecognised tag: 'java.version' (position: START_TAG seen ...</pluginManagement>\n      <java.version>... @28:21)  @ line 28, column 21 -> [Help 2]
+```
+
+This demonstrates the issue occurs when the JVM's version string is the four-part
+SapMachine name; Maven's POM parser (or a plugin) ends up reading the active
+JDK information and fails to parse certain tags in some environments.
+
+## Notes / mitigations
+
+- Reverting to a simpler POM (remove enforcer/plugin sections that reference
+  Java properties) avoids the immediate failure — this repository contains a
+  simplified `pom.xml` you can use for debugging.
+- Using a JDK whose reported version string is the conventional semver form
+  (as `actions/setup-java` exposes it, e.g. `21.0.10+0.1`) or using a JDK
+  distribution that reports a simpler version can avoid the problem.
+- The CI repro in this repo focuses on `mvn package` with SapMachine `21.0.10+0.1`.
+

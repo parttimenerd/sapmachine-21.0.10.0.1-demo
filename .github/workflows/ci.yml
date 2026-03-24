@@ -1,0 +1,35 @@
+name: package-on-21
+
+env:
+  MAVEN_VERSION: "3.9.11"
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SapMachine JDK 21.0.10
+        uses: actions/setup-java@v5
+        with:
+          distribution: sapmachine
+          # Use SapMachine SemVer build-metadata for 21.0.10.0.1
+          java-version: '21.0.10+0.1'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
+
+      - name: Print versions
+        run: |
+          java -version
+          mvn --version
+
+      - name: Package (mvn package)
+        run: mvn -B package

@@ -35,8 +35,23 @@ jobs:
       - name: Echo Java Version
         run: java --version
     
-      - name: Build
-        uses: ./.github/actions/build
+      - name: Set up SapMachine JDK
+        uses: actions/setup-java@v5
         with:
+          distribution: sapmachine
           java-version: ${{ matrix.java-version }}
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
           maven-version: ${{ env.MAVEN_VERSION }}
+
+      - name: Print toolchain versions
+        run: |
+          echo "=== Java ==="
+          java -version
+          echo "=== Maven ==="
+          mvn --version
+
+      - name: Package (mvn package)
+        run: mvn -B package

@@ -10,37 +10,25 @@
   <packaging>jar</packaging>
 
   <properties>
-       <revision>1.0.0</revision>
-    <jdk.version>17</jdk.version>
-    <maven.compiler.release>${java.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <build>
-    <pluginManagement>
-        <plugins>
-                    <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.2</version>
-        </plugin>
-        </plugins>
-    </pluginManagement>
     <plugins>
+      <!-- Enforcer plugin: bound to validate to fail early -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.6.2</version>
         <executions>
           <execution>
+            <id>enforce-java</id>
             <phase>validate</phase>
-            <id>no-duplicate-declared-dependencies</id>
             <goals>
               <goal>enforce</goal>
             </goals>
             <configuration>
               <rules>
-                <banDuplicatePomDependencyVersions/>
-                <requireMavenVersion>
-                  <version>3.6.3</version>
-                </requireMavenVersion>
                 <requireJavaVersion>
                   <version>${java.version}</version>
                 </requireJavaVersion>
@@ -49,23 +37,10 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <release>${maven.compiler.release}</release>
-        </configuration>
-      </plugin>
-    <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <release>${jdk.version}</release>
-          <compilerArgs>
-            <arg>-parameters</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
+
+      
+      <!-- Compiler plugin: use the same java.version for release -->
+
     </plugins>
   </build>
 
