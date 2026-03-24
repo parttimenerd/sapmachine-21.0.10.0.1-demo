@@ -114,13 +114,10 @@ This demonstrates the issue occurs when the JVM's version string is the four-par
 SapMachine name; Maven's POM parser (or a plugin) ends up reading the active
 JDK information and fails to parse certain tags in some environments.
 
-## Notes / mitigations
 
-- Reverting to a simpler POM (remove enforcer/plugin sections that reference
-  Java properties) avoids the immediate failure — this repository contains a
-  simplified `pom.xml` you can use for debugging.
-- Using a JDK whose reported version string is the conventional semver form
-  (as `actions/setup-java` exposes it, e.g. `21.0.10+0.1`) or using a JDK
-  distribution that reports a simpler version can avoid the problem.
-- The CI repro in this repo focuses on `mvn package` with SapMachine `21.0.10+0.1`.
+Problem persists, when we hard-code the JDK version 21.0.10.0.1 in the POM
 
+```sh
+[ERROR] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion failed with message:
+[ERROR] Detected JDK /Users/i560383_1/Downloads/sapmachine-jdk-21.0.10.0.1.jdk/Contents/Home is version 21.0.10-0 which is not in the allowed range [21.0.10.0.1,).
+```
