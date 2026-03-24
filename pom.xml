@@ -20,10 +20,16 @@
   </properties>
 
   <build>
+    <pluginManagement>
+        <plugins>
+                    <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.6.2</version>
+        </plugin>
+        </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.0.0</version>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
