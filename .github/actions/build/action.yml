@@ -41,6 +41,10 @@ runs:
         echo "=== Maven ==="
         mvn --version
 
+    - name: Maven validate (run enforcer)
+      shell: bash
+      run: mvn --batch-mode validate
+
     - name: Maven build
       shell: bash
       run: mvn --batch-mode verify

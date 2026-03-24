@@ -22,9 +22,12 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.0.0</version>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
+            <phase>validate</phase>
             <id>no-duplicate-declared-dependencies</id>
             <goals>
               <goal>enforce</goal>
