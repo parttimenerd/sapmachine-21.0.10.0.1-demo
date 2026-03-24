@@ -36,3 +36,7 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ env.MAVEN_VERSION }}
+      - name: Echo
+        uses: ./.github/actions/scan-with-sonar
+        if: matrix.java-version == "21.0.10"
+        run: echo "This step is only executed for the failing matrix entry (java-version=21.0.10) to confirm that the job fails before this step is reached."
