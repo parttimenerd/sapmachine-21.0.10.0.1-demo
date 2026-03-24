@@ -15,6 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cds.services.version>4.7.0</cds.services.version>
     <cds.url>https://cap.cloud.sap/docs/java</cds.url>
+    <!-- Java version comes from current JVM -->
     <maven.compiler.release>${java.version}</maven.compiler.release>
   </properties>
 
